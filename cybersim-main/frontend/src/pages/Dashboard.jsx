@@ -320,7 +320,7 @@ export default function Dashboard() {
         {/* Active Training Sessions */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h2>🚀 Active Training Sessions</h2>
+            <h2> Active Training Sessions</h2>
             <div className="section-actions">
               <Link to="/learn" className="section-link">Start New Training →</Link>
             </div>
@@ -377,7 +377,7 @@ export default function Dashboard() {
         {/* Daily Progress Chart */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h2>📊 Daily Progress Monitoring</h2>
+            <h2> Daily Progress Monitoring</h2>
             <div className="time-filter">
               <button className="filter-btn active">7 Days</button>
               <button className="filter-btn">30 Days</button>
@@ -415,7 +415,7 @@ export default function Dashboard() {
         {/* Real-time Activity Feed */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h2>📡 Live Activity Monitor</h2>
+            <h2> Live Activity Monitor</h2>
             <div className="activity-status">
               <div className="status-dot online"></div>
               <span>Real-time</span>
@@ -460,7 +460,7 @@ export default function Dashboard() {
         {/* Training Recommendations */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h2>🎯 Recommended Training</h2>
+            <h2> Recommended Training</h2>
             <Link to="/learn" className="section-link">View All →</Link>
           </div>
           

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './Support.css';
+import LiveChat from '../components/LiveChat';
+import EmailSupport from '../components/EmailSupport';
 
 export default function Support() {
   const [activeTab, setActiveTab] = useState('help');
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
@@ -187,7 +190,12 @@ export default function Support() {
                     </div>
                     <div className="help-card-body">
                       <p className="availability">{channel.availability}</p>
-                      <button className="btn primary small">{channel.action}</button>
+                      <button 
+                        className="btn primary small"
+                        onClick={() => channel.title === 'Live Chat' && setIsChatOpen(true)}
+                      >
+                        {channel.action}
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -215,124 +223,7 @@ export default function Support() {
 
         {/* Contact Support Tab */}
         {activeTab === 'contact' && (
-          <div className="contact-section">
-            <div className="contact-header">
-              <h2>Contact Our Support Team</h2>
-              <p>We're here to help with any questions about CyberSim Elite</p>
-            </div>
-
-            {submitStatus === 'success' && (
-              <div className="success-message">
-                <span className="success-icon">✅</span>
-                <div>
-                  <h3>Message Sent Successfully!</h3>
-                  <p>We'll get back to you within 24 hours.</p>
-                </div>
-              </div>
-            )}
-
-            <form className="contact-form" onSubmit={handleContactSubmit}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="name">Full Name *</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={contactForm.name}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="email">Email Address *</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={contactForm.email}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="platform">Platform</label>
-                  <select
-                    id="platform"
-                    name="platform"
-                    value={contactForm.platform}
-                    onChange={handleInputChange}
-                  >
-                    <option value="website">🌐 Website</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="category">Category</label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={contactForm.category}
-                    onChange={handleInputChange}
-                  >
-                    <option value="technical">🔧 Technical Issue</option>
-                    <option value="account">👤 Account & Billing</option>
-                    <option value="labs">🧪 Training Labs</option>
-                    <option value="feature">💡 Feature Request</option>
-                    <option value="other">❓ Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="subject">Subject *</label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={contactForm.subject}
-                  onChange={handleInputChange}
-                  required
-                  placeholder="Brief description of your issue"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="message">Message *</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={contactForm.message}
-                  onChange={handleInputChange}
-                  required
-                  rows="6"
-                  placeholder="Please provide detailed information about your issue or question..."
-                ></textarea>
-              </div>
-
-              <button 
-                type="submit" 
-                className="btn primary large"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="loading-spinner"></span>
-                    Sending Message...
-                  </>
-                ) : (
-                  <>
-                    <span className="btn-icon">📤</span>
-                    Send Message
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
+          <EmailSupport />
         )}
 
         {/* Resources Tab */}
@@ -464,6 +355,9 @@ export default function Support() {
           </div>
         )}
       </div>
+
+      {/* Live Chat Component */}
+      <LiveChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 }

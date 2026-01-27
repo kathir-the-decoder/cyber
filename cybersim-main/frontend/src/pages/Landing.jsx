@@ -9,7 +9,7 @@ export default function Landing() {
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-badge">
-            <span className="badge-icon">🔒</span>
+            <span className="badge-icon"></span>
             <span>Powered by Elite Cybersecurity Team</span>
           </div>
           <h1 className="hero-title">

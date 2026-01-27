@@ -6,6 +6,8 @@ import defenseRoutes from "./routes/defenseRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import emailRoutes from "./routes/emailRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -19,6 +21,8 @@ app.use("/api/defense", defenseRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/articles", articleRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/email", emailRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));

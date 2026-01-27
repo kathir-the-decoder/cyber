@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation 
 import './App.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LiveBackground from './components/LiveBackground';
+import ChatButton from './components/ChatButton';
 import ScrollToTop from './components/ScrollToTop';
 import ScrollToTopOnRouteChange from './components/ScrollToTopOnRouteChange';
 import SingleAttackSession from './attacks/atk1';
@@ -58,7 +59,7 @@ function Navigation() {
     <nav className="top-nav">
       <div className="brand">
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <span className="brand-text">🔒 CyberSim Elite</span>
+          <span className="brand-text"> CyberSim Elite</span>
         </Link>
       </div>
       <div className="nav-actions">
@@ -268,6 +269,7 @@ function AppContent() {
             />
           </Routes>
         </div>
+        <ChatButton />
         <ScrollToTop />
       </div>
     );
