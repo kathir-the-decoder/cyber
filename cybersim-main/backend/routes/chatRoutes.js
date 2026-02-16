@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 const chatSessions = new Map();
 
 // Get chat messages for a session
-router.get('/messages/:sessionId', auth, (req, res) => {
+router.get('/messages/:sessionId', protect, (req, res) => {
   const { sessionId } = req.params;
   
   if (chatSessions.has(sessionId)) {
@@ -24,7 +24,7 @@ router.get('/messages/:sessionId', auth, (req, res) => {
 });
 
 // Send a chat message
-router.post('/message', auth, (req, res) => {
+router.post('/message', protect, (req, res) => {
   const { sessionId, message } = req.body;
   const userId = req.userId;
 
@@ -70,7 +70,7 @@ router.post('/message', auth, (req, res) => {
 });
 
 // Clear chat session
-router.delete('/session/:sessionId', auth, (req, res) => {
+router.delete('/session/:sessionId', protect, (req, res) => {
   const { sessionId } = req.params;
   
   if (chatSessions.has(sessionId)) {

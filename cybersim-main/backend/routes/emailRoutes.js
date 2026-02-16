@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -45,7 +45,7 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 }
 
 // Send support email
-router.post('/send', auth, async (req, res) => {
+router.post('/send', protect, async (req, res) => {
   try {
     const {
       name,
@@ -259,7 +259,7 @@ router.post('/send', auth, async (req, res) => {
 });
 
 // Get ticket details
-router.get('/ticket/:ticketNumber', auth, (req, res) => {
+router.get('/ticket/:ticketNumber', protect, (req, res) => {
   const { ticketNumber } = req.params;
   
   if (emailTickets.has(ticketNumber)) {
@@ -286,7 +286,7 @@ router.get('/ticket/:ticketNumber', auth, (req, res) => {
 });
 
 // Get user's tickets
-router.get('/tickets', auth, (req, res) => {
+router.get('/tickets', protect, (req, res) => {
   const userId = req.userId;
   const userTickets = [];
 
@@ -303,7 +303,7 @@ router.get('/tickets', auth, (req, res) => {
 });
 
 // Add response to ticket (for support team)
-router.post('/ticket/:ticketNumber/response', auth, async (req, res) => {
+router.post('/ticket/:ticketNumber/response', protect, async (req, res) => {
   try {
     const { ticketNumber } = req.params;
     const { response, status } = req.body;
@@ -379,7 +379,7 @@ router.post('/ticket/:ticketNumber/response', auth, async (req, res) => {
 });
 
 // Close ticket
-router.post('/ticket/:ticketNumber/close', auth, (req, res) => {
+router.post('/ticket/:ticketNumber/close', protect, (req, res) => {
   const { ticketNumber } = req.params;
 
   if (!emailTickets.has(ticketNumber)) {
