@@ -1104,3 +1104,82 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Floating Chat Button */
+.floating-chat-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #00D4FF, #0066FF);
+  border: 2px solid rgba(0, 212, 255, 0.5);
+  border-radius: 50px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.3);
+  z-index: 9998;
+  transition: all 0.3s ease;
+  animation: floatPulse 3s ease-in-out infinite;
+}
+
+@keyframes floatPulse {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.5), 0 0 50px rgba(0, 212, 255, 0.4);
+  }
+}
+
+.floating-chat-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 40px rgba(0, 212, 255, 0.6), 0 0 60px rgba(0, 212, 255, 0.5);
+  animation: none;
+}
+
+.floating-chat-btn:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.chat-btn-icon {
+  font-size: 1.5rem;
+}
+
+.chat-btn-text {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .floating-chat-btn {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .chat-btn-text {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-chat-btn {
+    padding: 0.75rem 1rem;
+  }
+
+  .chat-btn-icon {
+    font-size: 1.3rem;
+  }
+}
+

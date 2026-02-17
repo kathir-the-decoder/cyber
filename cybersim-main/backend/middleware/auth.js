@@ -20,6 +20,9 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    // expose userId for routes that expect `req.userId`
+    req.userId = req.user._id || decoded.id;
+
     next();
   } catch (error) {
     res.status(401).json({ message: "Not authorized, token failed" });
@@ -33,3 +36,6 @@ export const admin = (req, res, next) => {
     res.status(403).json({ message: "Not authorized as admin" });
   }
 };
+
+// default export to support `import auth from '../middleware/auth.js'`
+export default protect;

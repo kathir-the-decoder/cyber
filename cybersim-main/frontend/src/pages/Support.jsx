@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './Support.css';
 import LiveChat from '../components/LiveChat';
-import EmailSupport from '../components/EmailSupport';
 
 export default function Support() {
   const [activeTab, setActiveTab] = useState('help');
@@ -223,7 +222,112 @@ export default function Support() {
 
         {/* Contact Support Tab */}
         {activeTab === 'contact' && (
-          <EmailSupport />
+          <div className="contact-section">
+            <h2>Contact Support</h2>
+            <p className="contact-intro">Send us a message and we'll get back to you within 24 hours</p>
+            
+            {submitStatus === 'success' && (
+              <div className="alert success">
+                ✅ Message sent successfully! We'll respond within 24 hours.
+              </div>
+            )}
+
+            <form className="contact-form" onSubmit={handleContactSubmit}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="name">Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="email">Email *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="category">Category *</label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={contactForm.category}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="technical">Technical Issue</option>
+                    <option value="account">Account & Billing</option>
+                    <option value="labs">Training Labs</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="platform">Platform *</label>
+                  <select
+                    id="platform"
+                    name="platform"
+                    value={contactForm.platform}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="website">Website</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="subject">Subject *</label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={contactForm.subject}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Brief description of your issue"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="message">Message *</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={contactForm.message}
+                  onChange={handleInputChange}
+                  required
+                  rows="6"
+                  placeholder="Please provide detailed information about your issue..."
+                ></textarea>
+              </div>
+
+              <button 
+                type="submit" 
+                className="btn primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          </div>
         )}
 
         {/* Resources Tab */}
