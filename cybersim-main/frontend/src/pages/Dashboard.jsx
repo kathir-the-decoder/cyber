@@ -208,20 +208,6 @@ export default function Dashboard() {
           <div className="user-info">
             <h1>Command Center - {user.name}</h1>
             <p>Operative ID: {user.operativeId} • Clearance: {user.clearanceLevel}</p>
-            <div className="system-status-indicators">
-              <div className="status-indicator online">
-                <div className="status-dot online"></div>
-                Training Systems Online
-              </div>
-              <div className="status-indicator online">
-                <div className="status-dot online"></div>
-                Lab Environments Ready
-              </div>
-              <div className="status-indicator online">
-                <div className="status-dot online"></div>
-                Monitoring Active
-              </div>
-            </div>
           </div>
         </div>
         <div className="quick-actions">
