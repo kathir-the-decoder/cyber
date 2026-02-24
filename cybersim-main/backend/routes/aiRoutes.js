@@ -1,10 +1,16 @@
 import express from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 
 const router = express.Router();
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Initialize OpenAI lazily to ensure env vars are loaded
+let openai = null;
+const getOpenAI = () => {
+  if (!openai) {
+    openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return openai;
+};
 
 // POST /api/ai/chat - Send message to AI
 router.post('/chat', async (req, res) => {
@@ -17,11 +23,11 @@ router.post('/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Get the generative model
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
-    // Build context for the AI
-    const systemContext = `You are CyberSim AI Assistant, a helpful and knowledgeable cybersecurity training assistant. You help users with:
+    // Build messages array for OpenAI
+    const messages = [
+      {
+        role: 'system',
+        content: `You are CyberSim AI Assistant, a helpful and knowledgeable cybersecurity training assistant. You help users with:
 
 1. Training Labs - Guide users through attack and defense simulations
 2. Account Issues - Help with login, password, and profile problems
@@ -44,27 +50,37 @@ DEFENSE LABS:
 - Web App Testing - Test application security
 - Malware Analysis - Analyze and detect malware
 
-Be helpful, concise, and provide actionable advice. Use emojis occasionally to make responses friendly. Keep responses under 200 words unless explaining complex topics.`;
+Be helpful, concise, and provide actionable advice. Use emojis occasionally to make responses friendly. Keep responses under 200 words unless explaining complex topics.`
+      }
+    ];
 
-    // Build conversation history for context
-    let conversationText = systemContext + '\n\n';
-    
+    // Add conversation history
     if (conversationHistory.length > 0) {
       conversationHistory.slice(-5).forEach(msg => {
-        conversationText += `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.text}\n`;
+        messages.push({
+          role: msg.sender === 'user' ? 'user' : 'assistant',
+          content: msg.text
+        });
       });
     }
-    
-    conversationText += `User: ${message}\nAssistant:`;
 
-    console.log('Calling Gemini API...');
+    // Add current message
+    messages.push({ role: 'user', content: message });
+
+    console.log('Calling OpenAI API...');
 
     // Generate response
-    const result = await model.generateContent(conversationText);
-    const response = await result.response;
-    const aiResponse = response.text();
+    const ai = getOpenAI();
+    const completion = await ai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 500,
+      temperature: 0.7
+    });
 
-    console.log('Gemini API response received:', aiResponse.substring(0, 100) + '...');
+    const aiResponse = completion.choices[0]?.message?.content || '';
+
+    console.log('OpenAI API response received:', (aiResponse || '').substring(0, 100) + '...');
 
     res.json({
       success: true,
@@ -73,17 +89,17 @@ Be helpful, concise, and provide actionable advice. Use emojis occasionally to m
     });
 
   } catch (error) {
-    console.error('AI Chat Error:', error.message);
+    console.error('AI Chat Error:', error?.message || error);
     console.error('Error details:', error);
     
     // Fallback response if API fails
-    const fallbackResponse = getFallbackResponse(req.body.message);
+    const fallbackResponse = getFallbackResponse(req.body?.message || '');
     
     res.json({
       success: true,
       response: fallbackResponse,
       fallback: true,
-      error: error.message,
+      error: error?.message || String(error),
       timestamp: new Date()
     });
   }
@@ -91,7 +107,7 @@ Be helpful, concise, and provide actionable advice. Use emojis occasionally to m
 
 // Fallback responses if API fails
 function getFallbackResponse(message) {
-  const lowerMessage = message.toLowerCase();
+  const lowerMessage = (message || '').toLowerCase();
   
   if (lowerMessage.includes('lab') || lowerMessage.includes('training')) {
     return "🧪 I can help you with our training labs! We have Attack Labs (SQL Injection, XSS, Command Injection, Directory Traversal, Pentest) and Defense Labs (System Hardening, Network Security, Incident Response, Web App Testing, Malware Analysis). Which one interests you?";
@@ -111,29 +127,33 @@ function getFallbackResponse(message) {
 // GET /api/ai/health - Check AI service health
 router.get('/health', async (req, res) => {
   try {
-    console.log('Health check - API Key exists:', !!process.env.GEMINI_API_KEY);
-    console.log('Health check - API Key length:', process.env.GEMINI_API_KEY?.length);
+    console.log('Health check - API Key exists:', !!process.env.OPENAI_API_KEY);
+    console.log('Health check - API Key length:', process.env.OPENAI_API_KEY?.length);
     
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-    const result = await model.generateContent('Say hello in one word');
-    const response = await result.response;
-    const text = response.text();
+    const ai = getOpenAI();
+    const completion = await ai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: 'Say hello in one word' }],
+      max_tokens: 10
+    });
+    
+    const text = completion.choices[0]?.message?.content || '';
     
     res.json({
       success: true,
       status: 'operational',
       message: 'AI service is running',
-      model: 'gemini-pro',
+      model: 'gpt-3.5-turbo',
       testResponse: text,
-      apiKeyConfigured: !!process.env.GEMINI_API_KEY
+      apiKeyConfigured: !!process.env.OPENAI_API_KEY
     });
   } catch (error) {
-    console.error('Health check error:', error.message);
+    console.error('Health check error:', error?.message || error);
     res.status(500).json({
       success: false,
       status: 'error',
-      message: error.message,
-      apiKeyConfigured: !!process.env.GEMINI_API_KEY
+      message: error?.message || String(error),
+      apiKeyConfigured: !!process.env.OPENAI_API_KEY
     });
   }
 });

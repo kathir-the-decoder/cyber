@@ -152,6 +152,7 @@ export default function LiveChat({ isOpen, onClose }) {
     // Try AI API first if enabled
     if (useAI) {
       try {
+        console.log('Attempting to call OpenAI API...');
         const response = await fetch('http://localhost:5050/api/ai/chat', {
           method: 'POST',
           headers: {
@@ -163,9 +164,12 @@ export default function LiveChat({ isOpen, onClose }) {
           })
         });
 
+        console.log('API Response status:', response.status);
+
         if (response.ok) {
           const data = await response.json();
-          
+          console.log('API Response data:', data);
+
           const botMessage = {
             id: Date.now() + 1,
             sender: 'agent',
@@ -174,13 +178,17 @@ export default function LiveChat({ isOpen, onClose }) {
             agentName: agentName,
             powered: data.fallback ? 'Smart Mode' : 'Gen AI'
           };
-          
+
           setMessages(prev => [...prev, botMessage]);
           setIsLoading(false);
           return;
+        } else {
+          console.error('API returned error status:', response.status);
+          const errorData = await response.text();
+          console.error('Error details:', errorData);
         }
       } catch (error) {
-        console.log('AI API unavailable, using local responses');
+        console.error('AI API error:', error);
       }
     }
 
